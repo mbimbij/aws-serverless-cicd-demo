@@ -1,6 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: AWS lambda for auto-formation purpose.
+
+Parameters:
+  ApplicationName:
+    Default: 'serverless-cicd'
+    Type: String
+    Description: Application Name
+
 Resources:
   MainFunction:
     Type: AWS::Serverless::Function
@@ -9,7 +16,7 @@ Resources:
       Handler: com.example.HelloHandler
       Runtime: java11
       Description: Java function
-      FunctionName: aws-serverless-cicd-demo
+      FunctionName: !Ref ApplicationName
       MemorySize: 128
       Timeout: 30
       # Function's execution role
