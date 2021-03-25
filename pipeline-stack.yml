@@ -102,6 +102,7 @@ Resources:
                 Resource:
                   - !Sub 'arn:${AWS::Partition}:codedeploy:${AWS::Region}:${AWS::AccountId}:application:${SamStackName}*'
                   - !Sub 'arn:${AWS::Partition}:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:${SamStackName}*'
+                  - !Sub 'arn:${AWS::Partition}:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentconfig:*'
               - Effect: Allow
                 Action:
                   - cloudformation:*

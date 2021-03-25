@@ -1,3 +1,6 @@
 .idea
 reposition-tag.sh
 out-sam-template.yml
+**/Main.java
+**/*.iml
+target

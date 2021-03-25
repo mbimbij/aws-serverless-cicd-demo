@@ -12,7 +12,7 @@ Resources:
   MainFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: target/aws-serverless-cicd-demo-1.0-SNAPSHOT.jar
+      CodeUri: aws-serverless-cicd-demo-main-function/target/aws-serverless-cicd-demo-main-function-1.0-SNAPSHOT.jar
       Handler: com.example.HelloHandler
       Runtime: java11
       Description: Java function
@@ -26,3 +26,43 @@ Resources:
         - AWSXrayWriteOnlyAccess
         - AWSLambdaVPCAccessExecutionRole
       Tracing: Active
+      AutoPublishAlias: live
+      DeploymentPreference:
+#          Type: Canary10Percent5Minutes
+        Type: AllAtOnce
+        Hooks:
+          #           Validation Lambda functions that are run before traffic shifting
+          PreTraffic: !Ref PreTrafficHook
+
+  PreTrafficHook:
+    Type: AWS::Serverless::Function
+    Properties:
+      DeploymentPreference:
+        Enabled: False
+      CodeUri: aws-serverless-cicd-demo-integration-tests/target/aws-serverless-cicd-demo-integration-tests-1.0-SNAPSHOT.jar
+      Handler: hooks.PreTrafficHook
+      Runtime: java11
+      Description: Java function
+      FunctionName: CodeDeployHook_prehook
+      MemorySize: 1024
+      Environment:
+        Variables:
+          NewLambdaVersion: !Ref MainFunction.Version
+          APPLICATION_NAME: !Ref ApplicationName
+      Timeout: 60
+      # Function's execution role
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - "codedeploy:PutLifecycleEventHookExecutionStatus"
+              Resource:
+                - !Sub 'arn:${AWS::Partition}:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:${ApplicationName}*'
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - "lambda:InvokeFunction"
+              Resource: !GetAtt MainFunction.Arn
