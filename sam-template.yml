@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: AWS lambda for auto-formation purpose.
+Resources:
+  MainFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: target/aws-serverless-cicd-demo-1.0-SNAPSHOT.jar
+      Handler: com.example.HelloHandler
+      Runtime: java11
+      Description: Java function
+      FunctionName: aws-serverless-cicd-demo
+      MemorySize: 128
+      Timeout: 30
+      # Function's execution role
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambdaReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+        - AWSLambdaVPCAccessExecutionRole
+      Tracing: Active
