@@ -213,6 +213,9 @@ Resources:
       Cache:
         Type: S3
         Location: !Sub '${S3Bucket}/maven-cache'
+      EncryptionKey: !GetAtt
+        - KmsKey
+        - Arn
       Source:
         Type: CODEPIPELINE
         BuildSpec: |
@@ -238,6 +241,11 @@ Resources:
       ArtifactStore:
         Type: S3
         Location: !Ref S3Bucket
+        EncryptionKey:
+          Id: !GetAtt
+            - KmsKey
+            - Arn
+          Type: KMS
       Stages:
         - Name: Source
           Actions:
@@ -289,3 +297,28 @@ Resources:
                 TemplatePath: !Sub 'BuildOutput::out-sam-template.yml'
                 ParameterOverrides: !Sub '{"ApplicationName":"${ApplicationName}"}'
                 StackName: !Ref SamStackName
+  KmsKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: A KMS key to enable cross account deployments
+      KeyPolicy:
+        Version: '2012-10-17'
+        Id: key-default-1
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+            Action: kms:*
+            Resource: '*'
+          - Sid: Allow use of the key
+            Effect: Allow
+            Principal: '*'
+            Action:
+              - kms:DescribeKey
+              - kms:Encrypt
+              - kms:Decrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey
+              - kms:GenerateDataKeyWithoutPlaintext
+            Resource: '*'
