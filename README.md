@@ -17,26 +17,15 @@ Ce projet sert de support à l'article de blog suivant:
 
 ## Déploiement de la pipeline
 
-créer la stack de la pipeline `CloudFormation`: `aws cloudformation create-stack --stack-name serverless-cicd-pipeline-stack --template-body file://pipeline-stack.yml --parameters ParameterKey=ApplicationName,ParameterValue=serverless-cicd --capabilities CAPABILITY_NAMED_IAM`
+1. Créer un compte pour l'environnement de test
+2. Créer un compte pour la pipeline
+3. Définir les profiles suivants dans `~/.aws/config` et `~/.aws/credentials`
+  - profile `operations`: le profile du compte dédié à l'éxécution de la pipeline,
+  - profile `test`: le profile du compte faisant office d'environnement de test
+4. Vérifier que les profiles sont bien renseignés dans le fichier `pipeline.env`
+5. Lancer la création de la pipeline: `./create-pipeline.sh`
+6. Activez la connexion github dans compte d'opérations
 
-mettre à jour la stack de la pipeline `CloudFormation`: `aws cloudformation update-stack --stack-name serverless-cicd-pipeline-stack --template-body file://pipeline-stack.yml --capabilities CAPABILITY_NAMED_IAM`
-
-### Déploiement de l'application (via SAM)
-
-1. En 3 temps
-
-```shell
-mvn clean package
-sam package --template-file sam-template.yml --s3-bucket $BUCKET --output-template-file out-sam-template.yml
-sam deploy --template-file out-sam-template.yml --stack-name serverless-cicd-demo-application --no-confirm-changeset --capabilities CAPABILITY_IAM
-```
-
-2. En 2 temps
-
-```shell
-mvn clean package
-sam deploy --template-file sam-template.yml --stack-name serverless-cicd-application-stack --capabilities CAPABILITY_IAM --no-confirm-changeset --s3-bucket $BUCKET
-```
 
 # :gb: Project Description
 
@@ -46,23 +35,11 @@ This project is a support for the following blog article
 
 ## pipeline deployment
 
-create `CloudFormation` pipeline stack: `aws cloudformation create-stack --stack-name serverless-cicd-pipeline-stack --template-body file://pipeline-stack.yml --parameters ParameterKey=ApplicationName,ParameterValue=serverless-cicd --capabilities CAPABILITY_NAMED_IAM`
-
-update `CloudFormation` pipeline stack: `aws cloudformation update-stack --stack-name serverless-cicd-pipeline-stack --template-body file://pipeline-stack.yml --capabilities CAPABILITY_NAMED_IAM`
-
-### application deployment (via SAM)
-
-In 3 passes:
-
-```shell
-mvn clean package
-sam package --template-file sam-template.yml --s3-bucket $BUCKET --output-template-file out-sam-template.yml
-sam deploy --template-file out-sam-template.yml --stack-name serverless-cicd-demo-application --no-confirm-changeset --capabilities CAPABILITY_IAM
-```
-
-2. In 2 passes
-
-```shell
-mvn clean package
-sam deploy --template-file sam-template.yml --stack-name serverless-cicd-application-stack --capabilities CAPABILITY_IAM --no-confirm-changeset --s3-bucket $BUCKET
-```
+1. Create an account that will be used as a test environment
+2. Create an account that will be used for pipeline execution
+3. Define the following profiles in `~/.aws/config` et `~/.aws/credentials`
+  - profile `operations`: dedicated to pipeline execution
+  - profile `test`: dedicated to test environment
+4. Verify that the profiles are set appropriately in `pipeline.env` file
+5. Launch the creation of the pipeline: `./create-pipeline.sh`
+6. Activate the github connection in the `operations` account

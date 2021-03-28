@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  ApplicationName:
+    Default: 'serverless-cicd'
+    Type: String
+    Description: Application Name
+  S3BucketName:
+    Type: String
+    Description: artifacts S3 bucket
+  TestAccountId:
+    Type: String
+    Description: Operations Account Id
+  AddKmsPermissions:
+    Description: Conditionally adds the access required by code build project role
+    Type: String
+    Default: false
+Conditions:
+  AddKmsCondition: !Equals [ !Ref AddKmsPermissions, true ]
+
+Resources:
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Description: S3 bucket for pipeline artifacts
+    Properties:
+      BucketName: !Ref S3BucketName
+  KmsKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: A KMS key to enable cross account deployments
+      KeyPolicy:
+        Version: '2012-10-17'
+        Id: key-default-1
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS:
+                - !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action: kms:*
+            Resource: '*'
+          - Sid: Allow use of the key
+            Effect: Allow
+            Principal:
+              AWS:
+                - !Sub arn:aws:iam::${AWS::AccountId}:root
+                - !If
+                  - AddKmsCondition
+                  - !Sub arn:aws:iam::${TestAccountId}:role/${ApplicationName}-pipeline-role
+                  - !Ref AWS::NoValue
+                - !If
+                  - AddKmsCondition
+                  - !Sub arn:aws:iam::${TestAccountId}:role/${ApplicationName}-deployer-role
+                  - !Ref AWS::NoValue
+                - !If
+                  - AddKmsCondition
+                  - !Sub arn:aws:iam::${AWS::AccountId}:role/${ApplicationName}-build-role
+                  - !Ref AWS::NoValue
+                - !If
+                  - AddKmsCondition
+                  - !Sub arn:aws:iam::${AWS::AccountId}:role/${ApplicationName}-pipeline-role
+                  - !Ref AWS::NoValue
+            Action:
+              - kms:DescribeKey
+              - kms:Encrypt
+              - kms:Decrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey
+              - kms:GenerateDataKeyWithoutPlaintext
+            Resource: '*'
+  KMSAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub 'alias/${ApplicationName}-codepipeline-crossaccounts'
+      TargetKeyId: !Ref KmsKey
+
+Outputs:
+  CMK:
+    Value: !GetAtt [ KmsKey,Arn ]
+  ArtifactBucket:
+    Value: !Ref S3Bucket

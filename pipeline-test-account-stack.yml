@@ -1,0 +1,96 @@
+Parameters:
+  ApplicationName:
+    Default: 'serverless-cicd'
+    Type: String
+    Description: Application Name
+  OpsAccountId:
+    Type: String
+    Description: Ops Account Id
+  S3BucketName:
+    Type: String
+    Description: artifacts S3 bucket
+  S3KmsKeyArn:
+    Type: String
+    Description: artifacts S3 bucket key arn
+
+Resources:
+  PipelineRole:
+    Type: 'AWS::IAM::Role'
+    Description: Cross-account IAM role for CodePipeline deployments
+    Properties:
+      RoleName: !Join
+        - '-'
+        - - !Ref ApplicationName
+          - pipeline-role
+      Path: /
+      Policies:
+        - PolicyName: !Join
+            - '-'
+            - - !Ref ApplicationName
+              - pipeline-policy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:*
+                Resource:
+                  - !Join [ '',[ 'arn:aws:s3:::',!Ref S3BucketName, '/*' ] ]
+                  - !Join [ '',[ 'arn:aws:s3:::',!Ref S3BucketName ] ]
+              - Effect: Allow
+                Action:
+                  - kms:*
+                Resource:
+                  - !Ref S3KmsKeyArn
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - cloudformation.amazonaws.com
+              AWS:
+                - !Ref OpsAccountId
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+        - arn:aws:iam::aws:policy/IAMFullAccess
+  DeployerRole:
+    Type: 'AWS::IAM::Role'
+    Description: Cross-account IAM role for cloudformation deploy resource
+    Properties:
+      RoleName: !Join
+        - '-'
+        - - !Ref ApplicationName
+          - deployer-role
+      Path: /
+      Policies:
+        - PolicyName: !Join
+            - '-'
+            - - !Ref ApplicationName
+              - deployer-policy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:*
+                Resource:
+                  - !Join [ '',[ 'arn:aws:s3:::',!Ref S3BucketName, '/*' ] ]
+                  - !Join [ '',[ 'arn:aws:s3:::',!Ref S3BucketName ] ]
+              - Effect: Allow
+                Action:
+                  - kms:*
+                Resource:
+                  - !Ref S3KmsKeyArn
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - cloudformation.amazonaws.com
+              AWS:
+                - !Ref OpsAccountId
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+        - arn:aws:iam::aws:policy/IAMFullAccess
+        - arn:aws:iam::aws:policy/AWSLambda_FullAccess
+        - arn:aws:iam::aws:policy/AWSCodeDeployFullAccess
