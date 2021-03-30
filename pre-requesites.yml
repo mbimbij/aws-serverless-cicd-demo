@@ -9,7 +9,10 @@ Parameters:
     Description: artifacts S3 bucket
   TestAccountId:
     Type: String
-    Description: Operations Account Id
+    Description: Test Account Id
+  ProdAccountId:
+    Type: String
+    Description: Production Account Id
   AddKmsPermissions:
     Description: Conditionally adds the access required by code build project role
     Type: String
@@ -45,6 +48,14 @@ Resources:
                 - !Sub arn:aws:iam::${AWS::AccountId}:root
                 - !If
                   - AddKmsCondition
+                  - !Sub arn:aws:iam::${AWS::AccountId}:role/${ApplicationName}-build-role
+                  - !Ref AWS::NoValue
+                - !If
+                  - AddKmsCondition
+                  - !Sub arn:aws:iam::${AWS::AccountId}:role/${ApplicationName}-pipeline-role
+                  - !Ref AWS::NoValue
+                - !If
+                  - AddKmsCondition
                   - !Sub arn:aws:iam::${TestAccountId}:role/${ApplicationName}-pipeline-role
                   - !Ref AWS::NoValue
                 - !If
@@ -53,11 +64,11 @@ Resources:
                   - !Ref AWS::NoValue
                 - !If
                   - AddKmsCondition
-                  - !Sub arn:aws:iam::${AWS::AccountId}:role/${ApplicationName}-build-role
+                  - !Sub arn:aws:iam::${ProdAccountId}:role/${ApplicationName}-pipeline-role
                   - !Ref AWS::NoValue
                 - !If
                   - AddKmsCondition
-                  - !Sub arn:aws:iam::${AWS::AccountId}:role/${ApplicationName}-pipeline-role
+                  - !Sub arn:aws:iam::${ProdAccountId}:role/${ApplicationName}-deployer-role
                   - !Ref AWS::NoValue
             Action:
               - kms:DescribeKey

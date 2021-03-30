@@ -20,6 +20,12 @@ aws cloudformation delete-stack \
   --profile $ACCOUNT_TEST_PROFILE
 aws cloudformation delete-stack \
   --stack-name $applicationName-roles-stack \
+  --profile $ACCOUNT_PROD_PROFILE
+aws cloudformation delete-stack \
+  --stack-name $applicationName-application-stack \
+  --profile $ACCOUNT_PROD_PROFILE
+aws cloudformation delete-stack \
+  --stack-name $applicationName-roles-stack \
   --profile $ACCOUNT_TEST_PROFILE
 aws cloudformation delete-stack \
   --stack-name $applicationName-pipeline-stack \
