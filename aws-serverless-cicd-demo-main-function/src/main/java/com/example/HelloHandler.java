@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HelloHandler implements RequestHandler<Object,HelloResponse> {
 
-  public final static String RESPONSE = "hello - v4";
+  public final static String RESPONSE = "hello - v1";
 
   @Override
   public HelloResponse handleRequest(Object helloRequest, Context context) {

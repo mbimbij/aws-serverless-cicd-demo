@@ -10,6 +10,7 @@ testAccountId=$(getAccountId $ACCOUNT_TEST_PROFILE)
 echo "testAccountId: $testAccountId"
 prodAccountId=$(getAccountId $ACCOUNT_PROD_PROFILE)
 echo "prodAccountId: $prodAccountId"
+echo "prodAccountId: $GITHUB_REPO"
 
 
 applicationName=serverless-cicd
@@ -55,7 +56,7 @@ aws cloudformation deploy \
   --template-file pipeline-ops-account-stack.yml \
   --capabilities CAPABILITY_NAMED_IAM \
   --profile $ACCOUNT_OPERATIONS_PROFILE \
-  --parameter-overrides ApplicationName=$applicationName S3BucketName=$s3BucketName S3KmsKeyArn=$s3KmsKeyArn TestAccountId=$testAccountId ProdAccountId=$prodAccountId
+  --parameter-overrides ApplicationName=$applicationName S3BucketName=$s3BucketName S3KmsKeyArn=$s3KmsKeyArn TestAccountId=$testAccountId ProdAccountId=$prodAccountId GithubRepo=$GITHUB_REPO
 
 echo "############################################################"
 echo "updating artifacts bucket kms key policy for cross-account access"

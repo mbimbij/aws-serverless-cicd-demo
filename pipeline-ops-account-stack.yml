@@ -4,7 +4,6 @@ Parameters:
     Type: String
     Description: Application Name
   GithubRepo:
-    Default: 'mbimbij/aws-serverless-cicd-demo'
     Type: String
     Description: Github source code repository
   GithubRepoBranch:
@@ -230,7 +229,7 @@ Resources:
                 RoleArn: !Sub 'arn:aws:iam::${TestAccountId}:role/${ApplicationName}-deployer-role'
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM
                 TemplatePath: !Sub 'BuildOutput::out-sam-template.yml'
-                ParameterOverrides: !Sub '{"ApplicationName":"${ApplicationName}"}'
+                ParameterOverrides: !Sub '{"ApplicationName":"${ApplicationName}", "DeploymentEnvironment":"test"}'
                 StackName: !Ref SamStackName
               RoleArn: !Sub 'arn:aws:iam::${TestAccountId}:role/${ApplicationName}-pipeline-role'
         - Name: ApproveDeployProd
@@ -259,7 +258,7 @@ Resources:
                 RoleArn: !Sub 'arn:aws:iam::${ProdAccountId}:role/${ApplicationName}-deployer-role'
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM
                 TemplatePath: !Sub 'BuildOutput::out-sam-template.yml'
-                ParameterOverrides: !Sub '{"ApplicationName":"${ApplicationName}"}'
+                ParameterOverrides: !Sub '{"ApplicationName":"${ApplicationName}", "DeploymentEnvironment":"prod"}'
                 StackName: !Ref SamStackName
               RoleArn: !Sub 'arn:aws:iam::${ProdAccountId}:role/${ApplicationName}-pipeline-role'
   S3BucketPolicy:

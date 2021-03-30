@@ -13,10 +13,11 @@
 # :fr: Description du projet
 
 Ce projet sert de support à l'article de blog suivant: 
-[joseph-mbimbi.fr/blog/aws-serverless-cicd-demo-1](joseph-mbimbi.fr/blog/aws-serverless-cicd-demo-1)
+[https://joseph-mbimbi.fr/blog/serverless-cicd-demo-1](https://joseph-mbimbi.fr/blog/serverless-cicd-demo-1)
 
 ## Déploiement de la pipeline
 
+0. Forker le repo [https://github.com/mbimbij/aws-serverless-cicd-demo](https://github.com/mbimbij/aws-serverless-cicd-demo)
 1. Créer un compte pour l'environnement de test
 2. Créer un compte pour l'environnement de prod
 3. Créer un compte pour la pipeline
@@ -32,11 +33,12 @@ Ce projet sert de support à l'article de blog suivant:
 # :gb: Project Description
 
 This project is a support for the following blog article 
-[joseph-mbimbi.fr/blog/aws-serverless-cicd-demo-1](joseph-mbimbi.fr/blog/aws-serverless-cicd-demo-1) 
+[https://joseph-mbimbi.fr/blog/serverless-cicd-demo-1](https://joseph-mbimbi.fr/blog/serverless-cicd-demo-1) 
 (blog article only in french for the moment)
 
 ## pipeline deployment
 
+0. Forker le repository [https://github.com/mbimbij/aws-serverless-cicd-demo](https://github.com/mbimbij/aws-serverless-cicd-demo)
 1. Create an account that will be used as a test environment
 2. Create an account that will be used as a prod environment
 3. Create an account that will be used for pipeline execution
