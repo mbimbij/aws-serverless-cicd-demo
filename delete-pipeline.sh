@@ -11,7 +11,7 @@ applicationName=serverless-cicd
 s3BucketName="$applicationName-artifacts-bucket"
 s3KmsKeyArn=$(aws cloudformation describe-stacks --stack-name $applicationName-pre-requesites-stack --profile $ACCOUNT_OPERATIONS_PROFILE --query \"Stacks[*].Outputs[?OutputKey=='CMK'].OutputValue\" --output text)
 
-
+aws s3 rm s3://$s3BucketName --recursive --profile $ACCOUNT_OPERATIONS_PROFILE
 aws cloudformation delete-stack \
   --stack-name $applicationName-pre-requesites-stack \
   --profile $ACCOUNT_OPERATIONS_PROFILE
