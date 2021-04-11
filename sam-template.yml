@@ -4,7 +4,6 @@ Description: AWS lambda for auto-formation purpose.
 
 Parameters:
   ApplicationName:
-    Default: 'serverless-cicd'
     Type: String
     Description: Application Name
   DeploymentEnvironment:
@@ -33,13 +32,12 @@ Resources:
       Tracing: Active
       AutoPublishAlias: live
       DeploymentPreference:
-#          Type: Canary10Percent5Minutes
         Type: !If
           - IsProductionCondition
           - Canary10Percent5Minutes
           - AllAtOnce
         Hooks:
-          #           Validation Lambda functions that are run before traffic shifting
+#           Validation Lambda functions that are run before traffic shifting
           PreTraffic: !Ref PreTrafficHook
 
   PreTrafficHook:
@@ -55,7 +53,6 @@ Resources:
       MemorySize: 1024
       Environment:
         Variables:
-          NewLambdaVersion: !Ref MainFunction.Version
           APPLICATION_NAME: !Ref ApplicationName
       Timeout: 60
       # Function's execution role

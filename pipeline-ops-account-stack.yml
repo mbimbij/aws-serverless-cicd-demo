@@ -1,6 +1,5 @@
 Parameters:
   ApplicationName:
-    Default: 'serverless-cicd'
     Type: String
     Description: Application Name
   GithubRepo:
@@ -11,7 +10,6 @@ Parameters:
     Type: String
     Description: Github source code branch
   SamStackName:
-    Default: 'serverless-cicd-application-stack'
     Type: String
     Description: Name of the SAM stack
   TestAccountId:
