@@ -1,6 +1,5 @@
 Parameters:
   ApplicationName:
-    Default: 'serverless-cicd'
     Type: String
     Description: Application Name
   OpsAccountId:

@@ -4,11 +4,17 @@ getAccountId () {
   aws sts get-caller-identity --profile $1 --query "Account" --output text
 }
 
+if [ -z $1 ]; then
+  echo -e "usage:\n./delete-pipeline.sh \$APPLICATION_NAME"
+  exit 1
+fi
+
+applicationName=$1
+
 operationsAccountId=$(getAccountId $ACCOUNT_OPERATIONS_PROFILE)
 testAccountId=$(getAccountId $ACCOUNT_TEST_PROFILE)
 
-applicationName=serverless-cicd
-s3BucketName="$applicationName-artifacts-bucket"
+s3BucketName="$operationsAccountId-$AWS_REGION-$applicationName-artifacts-bucket"
 s3KmsKeyArn=$(aws cloudformation describe-stacks --stack-name $applicationName-pre-requesites-stack --profile $ACCOUNT_OPERATIONS_PROFILE --query \"Stacks[*].Outputs[?OutputKey=='CMK'].OutputValue\" --output text)
 
 aws s3 rm s3://$s3BucketName --recursive --profile $ACCOUNT_OPERATIONS_PROFILE

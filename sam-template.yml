@@ -4,7 +4,6 @@ Description: AWS lambda for auto-formation purpose.
 
 Parameters:
   ApplicationName:
-    Default: 'serverless-cicd'
     Type: String
     Description: Application Name
   DeploymentEnvironment:
