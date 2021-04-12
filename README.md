@@ -15,6 +15,8 @@
 Ce projet sert de support à l'article de blog suivant: 
 [https://joseph-mbimbi.fr/blog/serverless-cicd-demo-1](https://joseph-mbimbi.fr/blog/serverless-cicd-demo-1)
 
+Il est la version "clean", améliorée et pas à pas du projet suivant: [https://github.com/mbimbij/aws-serverless-cicd-autonomie](https://github.com/mbimbij/aws-serverless-cicd-autonomie)
+
 ## Déploiement de la pipeline
 
 0. Forker le repo [https://github.com/mbimbij/aws-serverless-cicd-demo](https://github.com/mbimbij/aws-serverless-cicd-demo)
@@ -26,8 +28,9 @@ Ce projet sert de support à l'article de blog suivant:
   - profile `test`: le profile du compte faisant office d'environnement de test
   - profile `prod`: le profile du compte faisant office d'environnement de prod
 5. Vérifier que les profiles sont bien renseignés dans le fichier `pipeline.env`
-6. Lancer la création de la pipeline: `./create-pipeline.sh`
+6. Lancer la création de la pipeline: `./create-pipeline.sh $APPLICATION_NAME`
 7. Activez la connexion github dans compte d'opérations
+8. Supprimer la pipeline: `./delete-pipeline.sh $APPLICATION_NAME`
 
 
 # :gb: Project Description
@@ -35,6 +38,8 @@ Ce projet sert de support à l'article de blog suivant:
 This project is a support for the following blog article 
 [https://joseph-mbimbi.fr/blog/serverless-cicd-demo-1](https://joseph-mbimbi.fr/blog/serverless-cicd-demo-1) 
 (blog article only in french for the moment)
+
+It is the improved, enhanced and step by step version of the following project: [https://github.com/mbimbij/aws-serverless-cicd-autonomie](https://github.com/mbimbij/aws-serverless-cicd-autonomie)
 
 ## pipeline deployment
 
@@ -47,5 +52,6 @@ This project is a support for the following blog article
   - profile `test`: dedicated to test environment
   - profile `prod`: dedicated to prod environment
 5. Verify that the profiles are set appropriately in `pipeline.env` file
-6. Launch the creation of the pipeline: `./create-pipeline.sh`
+6. Launch the creation of the pipeline: `./create-pipeline.sh $APPLICATION_NAME`
 7. Activate the github connection in the `operations` account
+8. Delete the pipeline: `./delete-pipeline.sh $APPLICATION_NAME`
